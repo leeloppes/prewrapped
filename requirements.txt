@@ -1,0 +1,8 @@
+# Python-Version: 3.13 (Hopsworks verlangt < 3.14)
+# Installation:  pip install -r requirements.txt
+
+hopsworks[python]==5.2.1   # Featurestore + Model Registry
+scikit-learn==1.9.1        # Machine Learning (Random Forest)
+spotipy==2.26.0            # Spotify Web API
+python-dotenv==1.2.4       # Liest die geheimen Keys aus der .env-Datei
+joblib==1.6.0              # Modell lokal speichern
