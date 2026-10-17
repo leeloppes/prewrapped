@@ -24,3 +24,10 @@ __pycache__/
 .vscode/
 .DS_Store
 Thumbs.db
+
+# 🎫 Spotify Login-Token (wird von spotipy automatisch erstellt)
+.cache
+.cache-*
+
+# 🔐 Hopsworks Zertifikate (werden beim Login automatisch erstellt)
+.hopsworks_certs/

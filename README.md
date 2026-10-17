@@ -67,9 +67,24 @@ pip install -r requirements.txt
 
 ✏️ *Was kommt raus? Beispiel-Ausgabe.*
 
+## Schwierigkeiten
+
+- **Hopsworks Version:** Zuerst hatte ich Version 5.2.1 installiert, der Server läuft aber auf 5.1.
+  Es kam eine Warnung → ich habe die passende Version 5.1.2 installiert.
+- **Hopsworks auf Windows:** Beim Login wollte Hopsworks Zertifikate im Ordner `/tmp` speichern.
+  Den gibt es auf Windows nicht → Fehler "Pfad nicht gefunden".
+  Lösung: mit `cert_folder` einen eigenen Ordner im Projekt angeben (`.hopsworks_certs`).
+- **Spotify API 2026:** Spotify hat viele Funktionen für Entwickler gesperrt
+  (z.B. Tempo, Tanzbarkeit, Beliebtheit von Songs). Darum nutze ich nur mein Hörverhalten.
+- **Spotify Redirect URI:** Muss `http://127.0.0.1:8888/callback` sein, `localhost` wird nicht mehr akzeptiert.
+- **Zeitzone:** Die Spotify API gibt die Zeit in UTC zurück (z.B. 10:20 statt 12:20 bei uns).
+  Muss man bei Features wie der Uhrzeit beachten.
+
+✏️ *wird laufend ergänzt*
+
 ## Was nicht so gut geht (Limitationen)
 
-✏️ *Schwierigkeiten und Einschränkungen.*
+✏️ *Einschränkungen.*
 
 ## Projektstruktur
 
