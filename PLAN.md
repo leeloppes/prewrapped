@@ -1,4 +1,4 @@
-# 🗓️ Projektplan PreWrapped
+# Projektplan PreWrapped
 
 > Ziel: **Bis 1.11. steht alles** → danach nur noch Feedback / zweite Meinung und Abgabe.
 > Offizielle Abgabe: 15.11.2026 23:59 (Link zum GitHub Repo via Teams)
@@ -25,9 +25,9 @@
 |---|---|
 | Datenquelle, aufteilbar in historisch (Training) + aktuell (Inferenz) | Spotify Export + Spotify API |
 | Target + passende Features | KONZEPT.md Kap. 6 + 7 |
-| GitHub Repo | ✅ github.com/leeloppes/prewrapped |
-| Hopsworks Account | ✅ |
-| Dependencies, Python < 3.14 | ✅ Python 3.13, requirements.txt |
+| GitHub Repo | github.com/leeloppes/prewrapped |
+| Hopsworks Account | erledigt |
+| Dependencies, Python < 3.14 | Python 3.13, requirements.txt |
 | Feature Pipeline: Daten holen → Features → Feature Group (Primary Key + Event Time) → einfügen | `pipelines/1_feature_pipeline.py` |
 | Training Pipeline: Feature View → Training Dataset → Modell → Registry | `pipelines/2_training_pipeline.py` |
 | Inferenz Pipeline: Live-Daten → neueste Features → Modell laden → Vorhersage | `pipelines/3_inference_pipeline.py` |
@@ -48,20 +48,20 @@ Immer gleicher Ablauf pro Arbeitstag:
 
 ## 4. Zeitplan
 
-| Datum | Zeit | Was | Ergebnis | ✔ |
+| Datum | Zeit | Was | Ergebnis | |
 |---|---|---|---|---|
-| ✅ Fr 16.10. – Sa 17.10. | – | Idee, Konzept, Setup, GitHub | Repo online | ✅ |
-| ✅ Sa 17.10. | – | Hopsworks + Spotify Verbindungstest | Beide Verbindungen klappen | ✅ |
-| **So 18.10.** | 2–3 h | Beispieldaten erstellen · Daten anschauen (Notebook) · evtl. Feature Pipeline starten | Beispieldaten da | ☐ |
-| **Di 20.10.** | 1–1.5 h | Feature Pipeline Teil 1: Daten einlesen, Features mit pandas berechnen | Tabelle mit Features + Label | ☐ |
-| *21.–23.10.* | – | 📩 Spotify Export kommt (hoffentlich) | | ☐ |
-| **Fr 23.10.** | 3–4 h | Feature Pipeline Teil 2: Feature Group in Hopsworks erstellen + Daten einfügen · Falls Export da: echte Daten anschauen | Features im Featurestore | ☐ |
-| **Sa 24.10.** | 3–4 h | Echte Daten einbauen, Label-Grenze prüfen (5 oder 10 Plays) · Training Pipeline | Modell in der Model Registry | ☐ |
-| **So 25.10.** | 1 h | Kurz reinschauen: alles committed? README Features + Modell ergänzen | | ☐ |
-| **Di 27.10.** | 2–3 h | Inferenz Pipeline mit Live-Daten von der API | Vorhersage "XY % Lieblingssong" | ☐ |
-| **So 1.11.** | 3 h | README fertig, Limitationen, alles einmal von vorne testen | 🎉 **Version fertig** | ☐ |
-| 2.–14.11. | Puffer | Zweite Meinung, Korrekturen, evtl. Playlist-Ausbau | | ☐ |
-| **bis 15.11.** | – | Link via Teams abgeben (Ziel: schon ca. 8.11.) | ✅ Abgabe | ☐ |
+| Fr 16.10. – Sa 17.10. | – | Idee, Konzept, Setup, GitHub | Repo online | erledigt |
+| Sa 17.10. | – | Hopsworks + Spotify Verbindungstest | Beide Verbindungen klappen | erledigt |
+| **So 18.10.** | 2–3 h | Beispieldaten erstellen · Daten anschauen (Notebook) · evtl. Feature Pipeline starten | Beispieldaten da | offen |
+| **Di 20.10.** | 1–1.5 h | Feature Pipeline Teil 1: Daten einlesen, Features mit pandas berechnen | Tabelle mit Features + Label | offen |
+| *21.–23.10.* | – | Spotify Export kommt (hoffentlich) | | offen |
+| **Fr 23.10.** | 3–4 h | Feature Pipeline Teil 2: Feature Group in Hopsworks erstellen + Daten einfügen · Falls Export da: echte Daten anschauen | Features im Featurestore | offen |
+| **Sa 24.10.** | 3–4 h | Echte Daten einbauen, Label-Grenze prüfen (5 oder 10 Plays) · Training Pipeline | Modell in der Model Registry | offen |
+| **So 25.10.** | 1 h | Kurz reinschauen: alles committed? README Features + Modell ergänzen | | offen |
+| **Di 27.10.** | 2–3 h | Inferenz Pipeline mit Live-Daten von der API | Vorhersage "XY % Lieblingssong" | offen |
+| **So 1.11.** | 3 h | README fertig, Limitationen, alles einmal von vorne testen | **Version fertig** | offen |
+| 2.–14.11. | Puffer | Zweite Meinung, Korrekturen, evtl. Playlist-Ausbau | | offen |
+| **bis 15.11.** | – | Link via Teams abgeben (Ziel: schon ca. 8.11.) | Abgabe | offen |
 
 **Total ca. 16–20 Stunden.**
 

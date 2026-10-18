@@ -2,32 +2,32 @@
 # .gitignore = Liste von Dateien, die Git NICHT hochladen soll
 # ------------------------------------------------------------
 
-# 🔒 Persönliche Spotify-Daten (Hörverlauf) – bleiben nur lokal
+# Persönliche Spotify-Daten (Hörverlauf) – bleiben nur lokal
 data/raw/*
 !data/raw/.gitkeep
 
-# 🔑 Geheime Zugangsdaten (API-Keys)
+# Geheime Zugangsdaten (API-Keys)
 .env
 
-# 🤖 Trainierte Modelle (liegen in der Hopsworks Model Registry)
+# Trainierte Modelle (liegen in der Hopsworks Model Registry)
 models/*
 !models/.gitkeep
 
-# 🐍 Python-Umgebung und Cache
+# Python-Umgebung und Cache
 .venv/
 venv/
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
 
-# 💻 System-/Editor-Dateien
+# System-/Editor-Dateien
 .vscode/
 .DS_Store
 Thumbs.db
 
-# 🎫 Spotify Login-Token (wird von spotipy automatisch erstellt)
+# Spotify Login-Token (wird von spotipy automatisch erstellt)
 .cache
 .cache-*
 
-# 🔐 Hopsworks Zertifikate (werden beim Login automatisch erstellt)
+# Hopsworks Zertifikate (werden beim Login automatisch erstellt)
 .hopsworks_certs/

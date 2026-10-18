@@ -1,7 +1,7 @@
-# 🎁 PreWrapped – Welche Songs landen in deinem Wrapped?
+# PreWrapped – Welche Songs landen in deinem Wrapped?
 
 > Projektarbeit MLOps · Leandro Lopes · Abgabe: 15.11.2026 23:59
-> Status: **Entwurf v2** – offene Punkte sind mit ❓ markiert
+> Status: **Entwurf v2** – offene Punkte sind mit offen: markiert
 
 ---
 
@@ -9,15 +9,15 @@
 
 Spotify Wrapped zeigt dir **Ende Jahr rückblickend**, was du am meisten gehört hast.
 **PreWrapped** schaut **nach vorne**: Sobald ich einen neuen Song entdecke, sagt mein Modell nach
-**5 Tagen** voraus, ob er zu einem meiner **Lieblingssongs** wird – und packt die Hit-Kandidaten
+**7 Tagen** (einer Woche) voraus, ob er zu einem meiner **Lieblingssongs** wird – und packt die Hit-Kandidaten
 automatisch in eine Playlist **"Next Favorites"**.
 
 **Beispiel-Ausgabe der Inferenz:**
 ```
-🎁 PreWrapped – deine neuen Songs:
-  🔥 "Song A" – Artist X    81 % Lieblingssong-Potenzial  → zur Playlist hinzugefügt
-  🙂 "Song B" – Artist Y    42 %
-  💤 "Song C" – Artist Z     9 %
+ PreWrapped – deine neuen Songs:
+   "Song A" – Artist X    81 % Lieblingssong-Potenzial  → zur Playlist hinzugefügt
+   "Song B" – Artist Y    42 %
+   "Song C" – Artist Z     9 %
 ```
 
 ### Abgrenzung zu Spotify Wrapped
@@ -33,12 +33,12 @@ In meinem Verlauf vom letzten Jahr kenne ich bei alten Songs bereits **die Lösu
 Ich kann nachzählen, ob ein Song nach dem Entdecken wirklich oft gehört wurde.
 
 ```
-Song entdeckt ──► die ersten 5 Tage ──► Vorhersage-Zeitpunkt ──► ... ──► Tag 30: Lieblingssong? ja/nein
+Song entdeckt ──► die ersten 7 Tage ──► Vorhersage-Zeitpunkt ──► ... ──► Tag 30: Lieblingssong? ja/nein
                   (daraus Features)                                        (= Label / Lösung)
 ```
 
 1. **Training (historische Daten):** Das Modell sieht hunderte alte Songs mit den Features
-   ("wie habe ich ihn in den ersten 5 Tagen gehört?") **und** der Lösung (wurde er ein Lieblingssong?).
+   ("wie habe ich ihn in den ersten 7 Tagen gehört?") **und** der Lösung (wurde er ein Lieblingssong?).
    Es erkennt selbst Muster, z.B. *"Wer einen Song in den ersten Tagen 4× fertig hört, behält ihn oft."*
 2. **Test:** Ein Teil der alten Songs wird zurückgehalten, um zu prüfen, ob das Modell richtig rät.
 3. **Inferenz (aktuelle Daten):** Für **neu entdeckte Songs** ist die Lösung noch unbekannt –
@@ -48,15 +48,15 @@ Song entdeckt ──► die ersten 5 Tage ──► Vorhersage-Zeitpunkt ──�
 
 | Priorität | Ziel | Nötig fürs Testat? |
 |---|---|---|
-| 🟢 Muss | 3 funktionierende Pipelines (Feature, Training, Inferenz) | ✅ Ja |
-| 🟢 Muss | Hopsworks **Featurestore** für die Features | ✅ Ja |
-| 🟢 Muss | Mind. 1 aggregiertes Feature + 1 Echtzeit-Feature (RT), bei der Inferenz verwendet | ✅ Ja |
-| 🟢 Muss | README: Daten, Features, Modell, Pipelines, Anleitung, Limitationen | ✅ Ja |
-| 🟢 Muss | Abhängigkeiten sauber definiert (Python-Version, `requirements.txt`) | ✅ Ja |
-| 🔵 Soll | Beispieldaten (`data/sample/`) mit erfundenen Songs → andere können es testen | ❌ (hilft aber bei Nachvollziehbarkeit) |
-| 🟡 Kann | Inferenz erstellt Spotify-Playlist **"Next Favorites"** | ❌ Ausbaustufe |
-| 🟡 Kann | Web-App "Mein PreWrapped" mit Statistiken + Vorhersagen | ❌ Ausbaustufe |
-| ⚪ Später | Freunde laden ihren eigenen Export hoch; erweiterter Streamingverlauf | ❌ Nach Abgabe |
+| Muss | 3 funktionierende Pipelines (Feature, Training, Inferenz) | Ja |
+| Muss | Hopsworks **Featurestore** für die Features | Ja |
+| Muss | Mind. 1 aggregiertes Feature + 1 Echtzeit-Feature (RT), bei der Inferenz verwendet | Ja |
+| Muss | README: Daten, Features, Modell, Pipelines, Anleitung, Limitationen | Ja |
+| Muss | Abhängigkeiten sauber definiert (Python-Version, `requirements.txt`) | Ja |
+| Soll | Beispieldaten (`data/sample/`) mit erfundenen Songs → andere können es testen | (hilft aber bei Nachvollziehbarkeit) |
+| Kann | Inferenz erstellt Spotify-Playlist **"Next Favorites"** | Ausbaustufe |
+| Kann | Web-App "Mein PreWrapped" mit Statistiken + Vorhersagen | Ausbaustufe |
+| Später | Freunde laden ihren eigenen Export hoch; erweiterter Streamingverlauf | Nach Abgabe |
 
 ## 4. Tools
 
@@ -75,7 +75,7 @@ Song entdeckt ──► die ersten 5 Tage ──► Vorhersage-Zeitpunkt ──�
 | **Spotify Datenexport** ("Kontodaten", Streamingverlauf letztes Jahr) | Pro gehörtem Song: Zeitpunkt, Artist, Titel, Hördauer (ms) | **Historische Daten** → Training |
 | **Spotify Web API** (Premium) – "Recently Played" | Die letzten 50 gehörten Songs, **live** | **Aktuelle Daten** → Inferenz |
 
-- Datenexport angefordert am: ❓ *(Datum eintragen)* – erwartet nach ca. 5 Tagen
+- Datenexport angefordert am: offen: *(Datum eintragen)* – erwartet nach ca. 5 Tagen
 - Fallback: die letzten Wochen des Exports abspalten und als "aktuelle" Daten verwenden (laut Aufgabenstellung erlaubt).
 
 ## 6. Target (was wird vorhergesagt?)
@@ -86,7 +86,7 @@ mindestens 10 Mal** gehört habe.
 
 - "Neuer Song" = Song, den ich im Verlauf zum ersten Mal höre.
 - Ein Play zählt nur ab **30 Sekunden** Hördauer (sonst = geskippt).
-- **Vorhersage-Zeitpunkt:** **5 Tage** nach dem ersten Hören.
+- **Vorhersage-Zeitpunkt:** **7 Tage** (eine Woche) nach dem ersten Hören.
 - Die Grenze (5 oder 10 Plays) legen wir endgültig fest, wenn die Daten da sind: Es sollten ca.
   10–30 % der neuen Songs Lieblingssongs sein, sonst lernt das Modell schlecht.
 
@@ -96,12 +96,12 @@ mindestens 10 Mal** gehört habe.
 
 | Feature | Art | Beschreibung |
 |---|---|---|
-| `plays_first_5d` | 📦 aggregiert | Anzahl Plays in den ersten 5 Tagen |
-| `skip_rate_first_5d` | 📦 aggregiert | Anteil Plays unter 30 Sek. in den ersten 5 Tagen |
-| `days_with_play_5d` | 📦 aggregiert | An wie vielen der ersten 5 Tage ich den Song gehört habe |
-| `artist_plays_90d` | 📦 aggregiert | Wie oft ich den Artist in den 90 Tagen davor gehört habe ("kenne ich den Artist schon?") |
-| `played_last_24h` | ⚡ RT | Wurde der Song in den letzten 24 h gehört? (erst bei Inferenz bekannt, via API) |
-| `hour_of_last_play` | ⚡ RT | Uhrzeit des letzten Plays |
+| `plays_first_7d` | aggregiert | Anzahl Plays in den ersten 7 Tagen |
+| `skip_rate_first_7d` | aggregiert | Anteil Plays unter 30 Sek. in den ersten 7 Tagen |
+| `days_with_play_7d` | aggregiert | An wie vielen der ersten 7 Tage ich den Song gehört habe |
+| `artist_plays_90d` | aggregiert | Wie oft ich den Artist in den 90 Tagen davor gehört habe ("kenne ich den Artist schon?") |
+| `played_last_24h` | RT | Wurde der Song in den letzten 24 h gehört? (erst bei Inferenz bekannt, via API) |
+| `hour_of_last_play` | RT | Uhrzeit des letzten Plays |
 
 ## 8. Modell
 
@@ -113,13 +113,13 @@ mindestens 10 Mal** gehört habe.
 
 ```
  Spotify Export ─┐
-                 ├─► 1️⃣ Feature-Pipeline ──► 🗄️ Hopsworks Featurestore (Feature Group)
+                 ├─► 1 Feature-Pipeline ──►  Hopsworks Featurestore (Feature Group)
  Spotify API ────┘                                   │
                                                      ▼
-                                   2️⃣ Training-Pipeline ──► 📦 Hopsworks Model Registry
+                                   2 Training-Pipeline ──►  Hopsworks Model Registry
                                                      │                │
                                                      ▼                ▼
-                             Spotify API (live) ─► 3️⃣ Inferenz-Pipeline ──► 🔥 Vorhersage + Playlist
+                             Spotify API (live) ─► 3 Inferenz-Pipeline ──►  Vorhersage + Playlist
 ```
 
 - **Feature Group** `song_features`: Primary Key = `song_id` (Artist + Titel), Event Time = `first_played_at`
@@ -129,31 +129,31 @@ mindestens 10 Mal** gehört habe.
 ```
 spotify/
 ├── data/
-│   ├── raw/          🔒 Echter Spotify-Export (NICHT auf GitHub)
-│   └── sample/       🧪 Erfundene Beispieldaten zum Testen
+│   ├── raw/           Echter Spotify-Export (NICHT auf GitHub)
+│   └── sample/        Erfundene Beispieldaten zum Testen
 ├── pipelines/
 │   ├── 1_feature_pipeline.py
 │   ├── 2_training_pipeline.py
 │   └── 3_inference_pipeline.py
-├── src/              🧰 Gemeinsame Hilfsfunktionen (Spotify-Login, Feature-Berechnung)
-├── notebooks/        🔬 Zum Ausprobieren und Daten anschauen
-├── models/           🤖 Lokal gespeicherte Modelle (NICHT auf GitHub)
-├── docs/             🖼️ Bilder/Diagramme fürs README
-├── .env.example      🔑 Vorlage für API-Keys (ohne echte Werte)
+├── src/               Gemeinsame Hilfsfunktionen (Spotify-Login, Feature-Berechnung)
+├── notebooks/         Zum Ausprobieren und Daten anschauen
+├── models/            Lokal gespeicherte Modelle (NICHT auf GitHub)
+├── docs/              Bilder/Diagramme fürs README
+├── .env.example       Vorlage für API-Keys (ohne echte Werte)
 ├── .gitignore
 ├── requirements.txt
-├── KONZEPT.md        📝 Dieses Dokument
-└── README.md         📘 Abgabe-Dokumentation
+├── KONZEPT.md         Dieses Dokument
+└── README.md          Abgabe-Dokumentation
 ```
 
 ## 11. Zeitplan
 
-| Woche | Zeitraum | Aufgabe | ✔ |
+| Woche | Zeitraum | Aufgabe | |
 |---|---|---|---|
-| 1 | 16.–25.10. | Konzept ✅, Setup (Python, Git, GitHub, Hopsworks, Spotify-App), Beispieldaten | ☐ |
-| 2 | 26.10.–1.11. | Echte Daten erkunden, Feature-Pipeline | ☐ |
-| 3 | 2.–8.11. | Training- & Inferenz-Pipeline | ☐ |
-| 4 | 9.–15.11. | README, Limitationen, Puffer, (Playlist) – **Abgabe** | ☐ |
+| 1 | 16.–25.10. | Konzept , Setup (Python, Git, GitHub, Hopsworks, Spotify-App), Beispieldaten | offen |
+| 2 | 26.10.–1.11. | Echte Daten erkunden, Feature-Pipeline | offen |
+| 3 | 2.–8.11. | Training- & Inferenz-Pipeline | offen |
+| 4 | 9.–15.11. | README, Limitationen, Puffer, (Playlist) – **Abgabe** | offen |
 
 ## 12. Risiken & Limitationen (fürs README)
 
@@ -170,7 +170,7 @@ spotify/
 |---|---|
 | Titel | PreWrapped |
 | Lieblingssong-Grenze | 10 Plays in 30 Tagen (wird mit echten Daten überprüft) |
-| Vorhersage-Zeitpunkt | 5 Tage nach erstem Hören |
+| Vorhersage-Zeitpunkt | 7 Tage nach erstem Hören |
 | Beispieldaten | Ja |
 | Model Registry | Hopsworks |
 | Persönlicher Ausbau | Playlist "Next Favorites" |

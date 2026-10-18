@@ -1,15 +1,15 @@
-# 🎁 PreWrapped
+# PreWrapped
 
 Projektarbeit MLOps – Leandro Lopes – Abgabe 15.11.2026
 
-> ⚠️ Noch in Arbeit. Die Kapitel mit ✏️ fülle ich aus, sobald der Teil fertig ist.
+>  Noch in Arbeit. Die Kapitel mit TODO: fülle ich aus, sobald der Teil fertig ist.
 
 ---
 
 ## Worum geht es?
 
 Spotify Wrapped zeigt einem Ende Jahr, was man am meisten gehört hat. Ich wollte das umdrehen:
-Wenn ich einen neuen Song entdecke, soll mein Modell nach 5 Tagen sagen, ob das ein Lieblingssong von mir wird.
+Wenn ich einen neuen Song entdecke, soll mein Modell nach einer Woche (7 Tagen) sagen, ob das ein Lieblingssong von mir wird.
 
 Ein Song ist für mich ein Lieblingssong, wenn ich ihn in den ersten 30 Tagen mindestens 10 Mal höre.
 
@@ -22,22 +22,22 @@ Ein Song ist für mich ein Lieblingssong, wenn ich ihn in den ersten 30 Tagen mi
 Meine echten Daten sind nicht auf GitHub, weil das private Daten sind.
 Zum Ausprobieren gibt es Beispieldaten in `data/sample/`.
 
-✏️ *Wie viele Songs / Plays sind es? Wie viele davon wurden Lieblingssongs?*
+TODO: *Wie viele Songs / Plays sind es? Wie viele davon wurden Lieblingssongs?*
 
 ## Features
 
 | Feature | Art | Was es ist |
 |---|---|---|
-| ✏️ | aggregiert | |
-| ✏️ | RT (live) | |
+| TODO: | aggregiert | |
+| TODO: | RT (live) | |
 
 ## Modell
 
-✏️ *Welches Modell und warum.*
+TODO: *Welches Modell und warum.*
 
 ## Aufbau (die 3 Pipelines)
 
-✏️ *Kurz erklären, was jede Pipeline macht.*
+TODO: *Kurz erklären, was jede Pipeline macht.*
 
 1. **Feature Pipeline** – `pipelines/1_feature_pipeline.py`
 2. **Training Pipeline** – `pipelines/2_training_pipeline.py`
@@ -58,14 +58,14 @@ python -m venv .venv
 pip install -r requirements.txt
 
 # 3. Keys eintragen
-#    .env.example kopieren, in .env umbenennen und eigene Keys eintragen
+# .env.example kopieren, in .env umbenennen und eigene Keys eintragen
 ```
 
-✏️ *Reihenfolge zum Ausführen der Pipelines.*
+TODO: *Reihenfolge zum Ausführen der Pipelines.*
 
 ## Resultat
 
-✏️ *Was kommt raus? Beispiel-Ausgabe.*
+TODO: *Was kommt raus? Beispiel-Ausgabe.*
 
 ## Schwierigkeiten
 
@@ -80,11 +80,11 @@ pip install -r requirements.txt
 - **Zeitzone:** Die Spotify API gibt die Zeit in UTC zurück (z.B. 10:20 statt 12:20 bei uns).
   Muss man bei Features wie der Uhrzeit beachten.
 
-✏️ *wird laufend ergänzt*
+TODO: *wird laufend ergänzt*
 
 ## Was nicht so gut geht (Limitationen)
 
-✏️ *Einschränkungen.*
+TODO: *Einschränkungen.*
 
 ## Projektstruktur
 

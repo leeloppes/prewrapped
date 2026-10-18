@@ -23,7 +23,7 @@ project = hopsworks.login(
 )
 fs = project.get_feature_store()  # der Featurestore
 mr = project.get_model_registry()  # die Model Registry
-print(f"   ✅ Hopsworks ok! Projekt: {project.name}")
+print(f"   Hopsworks ok! Projekt: {project.name}")
 
 
 # ---------- 2. Spotify ----------
@@ -36,8 +36,8 @@ from spotipy.oauth2 import SpotifyOAuth
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope="user-read-recently-played"))
 
 zuletzt = sp.current_user_recently_played(limit=5)
-print("   ✅ Spotify ok! Deine letzten 5 Songs:")
+print("   Spotify ok! Deine letzten 5 Songs:")
 for eintrag in zuletzt["items"]:
     # Spotify hat 2026 teilweise "track" in "item" umbenannt -> wir nehmen, was da ist
     song = eintrag.get("track") or eintrag.get("item")
-    print(f"   🎵 {song['name']} – {song['artists'][0]['name']}  ({eintrag['played_at']})")
+    print(f"    {song['name']} – {song['artists'][0]['name']}  ({eintrag['played_at']})")
