@@ -61,6 +61,8 @@ pip install -r requirements.txt
 # .env.example kopieren, in .env umbenennen und eigene Keys eintragen
 ```
 
+**Auf Windows:** zuerst den Ordner `C:\tmp` erstellen (`mkdir C:\tmp`), sonst kann Hopsworks keine Daten hochladen (siehe Schwierigkeiten).
+
 TODO: *Reihenfolge zum Ausführen der Pipelines.*
 
 ## Resultat
@@ -71,9 +73,14 @@ TODO: *Was kommt raus? Beispiel-Ausgabe.*
 
 - **Hopsworks Version:** Zuerst hatte ich Version 5.2.1 installiert, der Server läuft aber auf 5.1.
   Es kam eine Warnung → ich habe die passende Version 5.1.2 installiert.
-- **Hopsworks auf Windows:** Beim Login wollte Hopsworks Zertifikate im Ordner `/tmp` speichern.
-  Den gibt es auf Windows nicht → Fehler "Pfad nicht gefunden".
-  Lösung: mit `cert_folder` einen eigenen Ordner im Projekt angeben (`.hopsworks_certs`).
+- **Hopsworks auf Windows (3 Probleme):** Hopsworks ist vor allem für Linux und Mac gemacht.
+  Auf Windows hatte ich drei Fehler:
+  1. Beim Login wollte Hopsworks Zertifikate im Ordner `/tmp` speichern. Den gibt es auf Windows nicht
+     → Fehler "Pfad nicht gefunden". Lösung: mit `cert_folder` einen eigenen Ordner im Projekt angeben.
+  2. Beim Erstellen der Feature Group: Das Standard-Format "DELTA" braucht eine Bibliothek,
+     die es nur für Linux/Mac gibt. Lösung: `time_travel_format="HUDI"` verwenden.
+  3. Beim Hochladen schreibt Hopsworks nochmals Dateien nach `/tmp`, diesmal fest im Code
+     (ignoriert `cert_folder`). Lösung: Ordner `C:\tmp` von Hand erstellen (`mkdir C:\tmp`).
 - **Spotify API 2026:** Spotify hat viele Funktionen für Entwickler gesperrt
   (z.B. Tempo, Tanzbarkeit, Beliebtheit von Songs). Darum nutze ich nur mein Hörverhalten.
 - **Spotify Redirect URI:** Muss `http://127.0.0.1:8888/callback` sein, `localhost` wird nicht mehr akzeptiert.

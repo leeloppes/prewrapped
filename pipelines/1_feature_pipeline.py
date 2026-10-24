@@ -37,4 +37,35 @@ print("\n   So sieht die Tabelle aus (erste 5 Zeilen):")
 print(features.drop(columns=["artist", "track"]).head().to_string(index=False))
 
 # ---------- Schritt 4 + 5: In Hopsworks speichern ----------
-# TODO: kommt im nächsten Schritt (Feature Group erstellen + Daten einfügen)
+import os
+import hopsworks
+from dotenv import load_dotenv
+
+load_dotenv()
+
+print("\n3) Verbinde mit Hopsworks ...")
+project = hopsworks.login(
+    host=os.getenv("HOPSWORKS_HOST"),
+    project=os.getenv("HOPSWORKS_PROJECT"),
+    api_key_value=os.getenv("HOPSWORKS_API_KEY"),
+    cert_folder=str(PROJEKT / ".hopsworks_certs"),
+)
+fs = project.get_feature_store()
+
+# Hopsworks will die Zeit ohne Zeitzone, darum UTC entfernen
+features["first_played_at"] = features["first_played_at"].dt.tz_localize(None)
+
+# Schritt 4: Feature Group erstellen (oder holen, falls es sie schon gibt)
+fg = fs.get_or_create_feature_group(
+    name="song_features",
+    version=1,
+    primary_key=["song_id"],
+    event_time="first_played_at",
+    time_travel_format="HUDI",
+    description="Features pro Song aus der ersten Woche und Label (Lieblingssong ja/nein)",
+)
+
+# Schritt 5: Daten einfügen
+print("4) Speichere Features in Hopsworks ...")
+fg.insert(features)
+print(f"   fertig, {len(features)} Songs in der Feature Group 'song_features'")

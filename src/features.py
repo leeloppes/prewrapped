@@ -16,6 +16,17 @@ MIN_PLAYS_LIEBLING = 10     # ab so vielen Plays ist es ein Lieblingssong
 TAGE_ARTIST = 90            # wie weit zurück schauen wir, ob ich den Artist kenne
 ZEITZONE = "Europe/Zurich"  # Spotify speichert UTC, wir wollen Schweizer Zeit
 
+# Diese Spalten bekommt das Modell als Input (Training und Inferenz brauchen die gleiche Liste)
+FEATURE_SPALTEN = [
+    "plays_first_7d",
+    "skip_rate_first_7d",
+    "days_with_play_7d",
+    "artist_plays_90d",
+    "played_last_24h",
+    "hour_of_last_play",
+]
+LABEL_SPALTE = "is_favorite"
+
 
 def lade_verlauf(ordner):
     """Liest alle Spotify-Dateien "StreamingHistory_music_*.json" aus einem Ordner
