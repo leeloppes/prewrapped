@@ -18,6 +18,7 @@
 **Kann (nur wenn Zeit bleibt):**
 - [ ] Playlist "Next Favorites" automatisch erstellen
 - [ ] Web-App
+- [ ] Vergleich mit meinem echten Spotify Wrapped 2025 (Datei `Wrapped2025.json` aus dem Export) als Abschluss im README
 
 ## 2. Vorgaben aus der Aufgabenstellung (Checkliste)
 

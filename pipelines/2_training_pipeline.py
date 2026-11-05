@@ -31,28 +31,30 @@ project = hopsworks.login(
 fs = project.get_feature_store()
 
 # ---------- Schritt 1: Feature Group laden ----------
-fg = fs.get_feature_group(name="song_features", version=1)
+fg = fs.get_feature_group(name="song_features", version=2)
 
 # ---------- Schritt 2: Feature View erstellen ----------
 # Die Query sagt, welche Spalten wir wollen: die Features + das Label.
-# Mit dem Filter nehmen wir nur Songs, bei denen der Monat schon vorbei ist (Label sicher).
+# Kein Filter hier, weil die Inferenz Pipeline die gleiche View für die neuen Songs braucht.
 print("2) Erstelle Feature View ...")
-query = fg.select(FEATURE_SPALTEN + [LABEL_SPALTE]).filter(fg.label_fertig == True)
+query = fg.select(FEATURE_SPALTEN + [LABEL_SPALTE])
 
 fv = fs.get_or_create_feature_view(
     name="song_favorite_view",
-    version=1,
+    version=3,
     query=query,
     labels=[LABEL_SPALTE],
-    description="Features aus der ersten Woche + Label, nur Songs mit fertigem Label",
+    description="Features aus der ersten Woche + Label (is_favorite)",
 )
 
 # ---------- Schritt 3: Training Dataset erstellen ----------
 # Hopsworks teilt die Daten auf: 80 % zum Trainieren, 20 % zum Testen
 print("3) Hole Trainingsdaten ...")
+# Fürs Training nur Songs, bei denen der Monat schon vorbei ist (Label sicher)
 X_train, X_test, y_train, y_test = fv.train_test_split(
     test_size=0.2,
-    description="80/20 Split",
+    extra_filter=(fg.label_fertig == True),
+    description="80/20 Split, nur Songs mit fertigem Label",
 )
 y_train = y_train[LABEL_SPALTE]
 y_test = y_test[LABEL_SPALTE]
@@ -60,7 +62,9 @@ print(f"   {len(X_train)} Songs zum Trainieren, {len(X_test)} zum Testen")
 
 # ---------- Schritt 4: Modell trainieren und bewerten ----------
 print("4) Trainiere Modell ...")
-modell = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42)
+# Nur ca. 5 % sind Lieblingssongs. "balanced" sagt dem Modell, dass die seltenen
+# Lieblingssongs gleich wichtig sind wie die vielen normalen Songs.
+modell = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42, class_weight="balanced")
 modell.fit(X_train[FEATURE_SPALTEN], y_train)
 
 vorhersage = modell.predict(X_test[FEATURE_SPALTEN])

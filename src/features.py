@@ -11,9 +11,10 @@ import pandas as pd
 # ---------- Einstellungen ----------
 MIN_MS_PLAY = 30_000        # unter 30 Sekunden gilt ein Play als geskippt
 TAGE_BEOBACHTEN = 7         # nach so vielen Tagen machen wir die Vorhersage
-TAGE_LABEL = 30             # in diesem Zeitraum wird gezählt, ob es ein Lieblingssong wurde
-MIN_PLAYS_LIEBLING = 10     # ab so vielen Plays ist es ein Lieblingssong
+TAGE_LABEL = 30             # bis Tag 30 wird gezählt, ob es ein Lieblingssong wurde
+MIN_PLAYS_LIEBLING = 2      # so oft muss ich ihn NACH der ersten Woche (Tag 7-30) noch hören
 TAGE_ARTIST = 90            # wie weit zurück schauen wir, ob ich den Artist kenne
+TAGE_EINLAUF = 30           # Songs aus den ersten 30 Tagen vom Verlauf ignorieren (evtl. nicht wirklich neu)
 ZEITZONE = "Europe/Zurich"  # Spotify speichert UTC, wir wollen Schweizer Zeit
 
 # Diese Spalten bekommt das Modell als Input (Training und Inferenz brauchen die gleiche Liste)
@@ -54,6 +55,8 @@ def berechne_song_features(plays, jetzt=None):
     """
     if jetzt is None:
         jetzt = plays["played_at"].max()
+    # Was ich am Anfang vom Verlauf zum ersten Mal höre, kannte ich vielleicht schon vorher
+    start_neue_songs = plays["played_at"].min() + pd.Timedelta(days=TAGE_EINLAUF)
 
     # Wann habe ich jeden Song zum ersten Mal gehört?
     erster_play = plays.groupby("song_id")["played_at"].min().rename("first_played_at")
@@ -68,14 +71,21 @@ def berechne_song_features(plays, jetzt=None):
         # Songs, die noch keine 7 Tage alt sind, überspringen (zu wenig Infos)
         if vorhersage_zeit > jetzt:
             continue
+        # Songs aus den ersten 30 Tagen vom Verlauf überspringen (nicht sicher neu)
+        if erster < start_neue_songs:
+            continue
 
         # Nur Plays, die VOR dem Vorhersage-Zeitpunkt passiert sind (sonst wäre es Data Leakage)
         frueh = p[p["tage_seit_erstem"] < TAGE_BEOBACHTEN]
         letzter = frueh["played_at"].max()
 
-        # Label: Wurde er in den ersten 30 Tagen mind. 10 Mal richtig gehört?
+        # Label: Höre ich den Song NACH der ersten Woche (Tag 7 bis 30) noch mind. 2 Mal?
+        # Nur Plays nach dem Vorhersage-Zeitpunkt zählen, sonst wäre das Label schon in den Features drin
         label_fertig = erster + pd.Timedelta(days=TAGE_LABEL) <= jetzt
-        plays_30d = p[(p["tage_seit_erstem"] < TAGE_LABEL) & p["gehoert"]].shape[0]
+        spaeter = p[(p["tage_seit_erstem"] >= TAGE_BEOBACHTEN)
+                    & (p["tage_seit_erstem"] < TAGE_LABEL)
+                    & p["gehoert"]]
+        plays_spaeter = spaeter.shape[0]
 
         zeilen.append({
             "song_id": song_id,
@@ -90,7 +100,7 @@ def berechne_song_features(plays, jetzt=None):
             "played_last_24h": int(letzter > vorhersage_zeit - pd.Timedelta(hours=24)),
             "hour_of_last_play": int(letzter.tz_convert(ZEITZONE).hour),
             # ---- Label ----
-            "is_favorite": int(plays_30d >= MIN_PLAYS_LIEBLING),
+            "is_favorite": int(plays_spaeter >= MIN_PLAYS_LIEBLING),
             "label_fertig": bool(label_fertig),  # False = 30 Tage noch nicht vorbei
         })
 

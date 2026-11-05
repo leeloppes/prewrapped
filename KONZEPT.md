@@ -81,14 +81,17 @@ Song entdeckt ──► die ersten 7 Tage ──► Vorhersage-Zeitpunkt ──�
 ## 6. Target (was wird vorhergesagt?)
 
 **Label `is_favorite` (ja / nein):**
-Ein neuer Song gilt als Lieblingssong, wenn ich ihn in den **30 Tagen nach dem ersten Hören
-mindestens 10 Mal** gehört habe.
+Ein neuer Song gilt als Lieblingssong, wenn ich ihn **nach der ersten Woche (Tag 7 bis 30)
+noch mindestens 2 Mal** gehört habe. Also: Bleibt der Song bei mir hängen?
 
-- "Neuer Song" = Song, den ich im Verlauf zum ersten Mal höre.
+- "Neuer Song" = Song, den ich im Verlauf zum ersten Mal höre. Songs aus den ersten 30 Tagen
+  vom Verlauf werden ignoriert, weil ich sie vielleicht schon vorher kannte.
 - Ein Play zählt nur ab **30 Sekunden** Hördauer (sonst = geskippt).
 - **Vorhersage-Zeitpunkt:** **7 Tage** (eine Woche) nach dem ersten Hören.
-- Die Grenze (5 oder 10 Plays) legen wir endgültig fest, wenn die Daten da sind: Es sollten ca.
-  10–30 % der neuen Songs Lieblingssongs sein, sonst lernt das Modell schlecht.
+- Warum nur Tag 7 bis 30? Zuerst hatte ich "mind. 5 Plays in Tag 0 bis 30". Dann war aber jeder Song
+  mit 5 Plays in der ersten Woche automatisch ein Lieblingssong, das Label steckte also schon in den
+  Features. Mit Tag 7 bis 30 zählt nur, was NACH der Vorhersage passiert.
+- Mit meinen echten Daten: 7'113 Songs, davon 439 Lieblingssongs (6 %).
 
 → Typ: **binäre Klassifikation**
 
@@ -169,7 +172,7 @@ spotify/
 | Frage | Entscheid |
 |---|---|
 | Titel | PreWrapped |
-| Lieblingssong-Grenze | 10 Plays in 30 Tagen (wird mit echten Daten überprüft) |
+| Lieblingssong-Grenze | mind. 2 Plays nach der ersten Woche (Tag 7 bis 30) |
 | Vorhersage-Zeitpunkt | 7 Tage nach erstem Hören |
 | Beispieldaten | Ja |
 | Model Registry | Hopsworks |

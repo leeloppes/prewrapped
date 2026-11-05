@@ -58,7 +58,7 @@ features["first_played_at"] = features["first_played_at"].dt.tz_localize(None)
 # Schritt 4: Feature Group erstellen (oder holen, falls es sie schon gibt)
 fg = fs.get_or_create_feature_group(
     name="song_features",
-    version=1,
+    version=2,  # Version 1 = Beispieldaten, Version 2 = meine echten Daten
     primary_key=["song_id"],
     event_time="first_played_at",
     time_travel_format="HUDI",

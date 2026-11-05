@@ -11,7 +11,7 @@ Projektarbeit MLOps – Leandro Lopes – Abgabe 15.11.2026
 Spotify Wrapped zeigt einem Ende Jahr, was man am meisten gehört hat. Ich wollte das umdrehen:
 Wenn ich einen neuen Song entdecke, soll mein Modell nach einer Woche (7 Tagen) sagen, ob das ein Lieblingssong von mir wird.
 
-Ein Song ist für mich ein Lieblingssong, wenn ich ihn in den ersten 30 Tagen mindestens 10 Mal höre.
+Ein Song ist für mich ein Lieblingssong, wenn ich ihn nach der ersten Woche (Tag 7 bis 30) noch mindestens 2 Mal höre. Also: Bleibt der Song bei mir hängen?
 
 ## Daten
 
@@ -81,6 +81,9 @@ TODO: *Was kommt raus? Beispiel-Ausgabe.*
      die es nur für Linux/Mac gibt. Lösung: `time_travel_format="HUDI"` verwenden.
   3. Beim Hochladen schreibt Hopsworks nochmals Dateien nach `/tmp`, diesmal fest im Code
      (ignoriert `cert_folder`). Lösung: Ordner `C:\tmp` von Hand erstellen (`mkdir C:\tmp`).
+- **Warten nach der Feature Pipeline:** Nach dem Hochladen schreibt Hopsworks die Daten mit einem Job
+  im Hintergrund in die Tabelle (ca. 2 Minuten). Hab ich die Training Pipeline zu früh gestartet, kam
+  "Could not read data using Hopsworks Query Service". Lösung: warten, bis der Job unter "Jobs" fertig ist.
 - **Spotify API 2026:** Spotify hat viele Funktionen für Entwickler gesperrt
   (z.B. Tempo, Tanzbarkeit, Beliebtheit von Songs). Darum nutze ich nur mein Hörverhalten.
 - **Spotify Redirect URI:** Muss `http://127.0.0.1:8888/callback` sein, `localhost` wird nicht mehr akzeptiert.
