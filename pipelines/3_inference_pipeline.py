@@ -85,10 +85,13 @@ print("3) Lade das neueste Modell aus der Model Registry ...")
 mr = project.get_model_registry()
 alle_versionen = mr.get_models("prewrapped_model")
 neuestes = max(alle_versionen, key=lambda m: m.version)
-download_ordner = PROJEKT / "models" / "download"
-download_ordner.mkdir(parents=True, exist_ok=True)
-pfad = neuestes.download(local_path=str(download_ordner))
-modell = joblib.load(Path(pfad) / "model.pkl")
+# Pro Version ein eigener Ordner. Ist das Modell schon da, nicht nochmals herunterladen
+# (sonst gibt Hopsworks einen Fehler, weil die Datei schon existiert)
+download_ordner = PROJEKT / "models" / "download" / f"v{neuestes.version}"
+if not list(download_ordner.rglob("model.pkl")):
+    download_ordner.mkdir(parents=True, exist_ok=True)
+    neuestes.download(local_path=str(download_ordner))
+modell = joblib.load(next(download_ordner.rglob("model.pkl")))
 print(f"   Modell Version {neuestes.version}")
 
 # ---------- Schritt 4: Vorhersage ----------
