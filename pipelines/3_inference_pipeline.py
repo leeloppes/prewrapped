@@ -64,6 +64,11 @@ if len(neue) == 0:
     sys.exit()
 print(f"   {len(neue)} neue Songs gefunden")
 
+# Hopsworks schreibt den Tabellennamen vor den Primary Key (z.B. "song_features_2_song_id").
+# Wir benennen die Spalte wieder einfach "song_id".
+pk_spalte = [spalte for spalte in neue.columns if spalte.endswith("song_id")][0]
+neue = neue.rename(columns={pk_spalte: "song_id"}).reset_index(drop=True)
+
 # ---------- RT-Features mit den Live-Daten aktualisieren ----------
 # Die Uhrzeit vom letzten Play und "in den letzten 24h gehört?" kennt man erst jetzt.
 # Wenn ein Song gerade live gehört wurde, nehmen wir die aktuellen Werte von Spotify.

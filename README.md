@@ -84,6 +84,8 @@ TODO: *Was kommt raus? Beispiel-Ausgabe.*
 - **Warten nach der Feature Pipeline:** Nach dem Hochladen schreibt Hopsworks die Daten mit einem Job
   im Hintergrund in die Tabelle (ca. 2 Minuten). Hab ich die Training Pipeline zu früh gestartet, kam
   "Could not read data using Hopsworks Query Service". Lösung: warten, bis der Job unter "Jobs" fertig ist.
+- **Primary Key umbenannt:** Bei `get_batch_data` heisst die Spalte `song_id` plötzlich anders
+  (Hopsworks schreibt den Tabellennamen davor, weil sie kein Feature ist). Lösung: Spalte suchen und umbenennen.
 - **Spotify API 2026:** Spotify hat viele Funktionen für Entwickler gesperrt
   (z.B. Tempo, Tanzbarkeit, Beliebtheit von Songs). Darum nutze ich nur mein Hörverhalten.
 - **Spotify Redirect URI:** Muss `http://127.0.0.1:8888/callback` sein, `localhost` wird nicht mehr akzeptiert.
