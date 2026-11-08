@@ -1,6 +1,4 @@
-# ------------------------------------------------------------
 # .gitignore = Liste von Dateien, die Git NICHT hochladen soll
-# ------------------------------------------------------------
 
 # Persönliche Spotify-Daten (Hörverlauf) – bleiben nur lokal
 data/raw/*

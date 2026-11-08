@@ -1,5 +1,5 @@
 """
-Erstellt erfundene Beispieldaten im GLEICHEN Format wie der Spotify Export
+Erstellt erfundene Beispieldaten im gleichen Format wie der Spotify Export
 (Datei "StreamingHistory_music_0.json" aus den Kontodaten).
 
 So kann man das Projekt testen, ohne echte Spotify-Daten zu haben.

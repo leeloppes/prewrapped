@@ -2,14 +2,13 @@
 3 INFERENZ PIPELINE
 Live-Daten von Spotify + neueste Features aus Hopsworks + Modell -> Vorhersage
 
-Für welche Songs? Für neue Songs, die ich in den letzten 30 Tagen entdeckt habe.
-Bei denen ist der Monat noch nicht vorbei, man weiss also noch nicht, ob sie hängen bleiben.
+Für welche Songs? Für neue Songs, bei denen der erste Monat noch nicht vorbei ist
+(die letzten 30 Tage vom Verlauf). Bei denen weiss man noch nicht, ob sie hängen bleiben.
 
 Ausführen mit:  python pipelines/3_inference_pipeline.py
 """
 import os
 import sys
-from datetime import datetime, timedelta
 from pathlib import Path
 
 import hopsworks
@@ -26,7 +25,7 @@ from src.features import FEATURE_SPALTEN, ZEITZONE
 load_dotenv()
 jetzt = pd.Timestamp.now(tz="UTC")
 
-# ---------- Schritt 1: Live-Daten von Spotify holen ----------
+# Live-Daten von Spotify holen
 print("1) Hole meine zuletzt gehörten Songs von Spotify ...")
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     scope="user-read-recently-played",
@@ -42,7 +41,7 @@ for eintrag in sp.current_user_recently_played(limit=50)["items"]:
 live = pd.DataFrame(live)
 print(f"   {len(live)} Plays, der letzte um {live['played_at'].max().tz_convert(ZEITZONE):%d.%m. %H:%M}")
 
-# ---------- Schritt 2: Feature View holen und neueste Features laden ----------
+# Feature View holen und neueste Features laden
 print("2) Lade die Features der neuen Songs aus Hopsworks ...")
 project = hopsworks.login(
     host=os.getenv("HOPSWORKS_HOST"),
@@ -53,26 +52,31 @@ project = hopsworks.login(
 fs = project.get_feature_store()
 fv = fs.get_feature_view(name="song_favorite_view", version=3)
 
-# Nur Songs, die ich in den letzten 30 Tagen zum ersten Mal gehört habe
-neue = fv.get_batch_data(
-    start_time=datetime.now() - timedelta(days=30),
-    primary_key=True,
-    event_time=True,
-)
+# Alle Songs aus der Feature View holen, mit Primary Key und Event Time
+neue = fv.get_batch_data(primary_key=True, event_time=True)
+
+# Hopsworks schreibt den Tabellennamen vor Spalten, die keine Features sind
+# (z.B. "song_features_2_song_id"). Wir benennen sie wieder einfach.
+for name in ["song_id", "first_played_at"]:
+    spalte = [s for s in neue.columns if s.endswith(name)][0]
+    neue = neue.rename(columns={spalte: name})
+neue["first_played_at"] = pd.to_datetime(neue["first_played_at"])
+
+# Nur neue Songs, bei denen der erste Monat noch nicht vorbei ist (Ergebnis noch offen).
+# Gezählt ab dem Ende der Daten und nicht ab heute, sonst findet man mit älteren Daten nichts mehr.
+# Die Feature Group hat nur Songs mit fertiger erster Woche, darum: letzter Song + 7 Tage = Ende der Daten.
+ende_daten = neue["first_played_at"].max() + pd.Timedelta(days=7)
+neue = neue[neue["first_played_at"] > ende_daten - pd.Timedelta(days=30)].reset_index(drop=True)
 if len(neue) == 0:
-    print("   Keine neuen Songs in den letzten 30 Tagen gefunden. Ende.")
+    print("   Keine neuen Songs gefunden. Ende.")
     sys.exit()
-print(f"   {len(neue)} neue Songs gefunden")
+print(f"   {len(neue)} neue Songs gefunden (entdeckt ab {ende_daten - pd.Timedelta(days=30):%d.%m.%Y})")
 
-# Hopsworks schreibt den Tabellennamen vor den Primary Key (z.B. "song_features_2_song_id").
-# Wir benennen die Spalte wieder einfach "song_id".
-pk_spalte = [spalte for spalte in neue.columns if spalte.endswith("song_id")][0]
-neue = neue.rename(columns={pk_spalte: "song_id"}).reset_index(drop=True)
-
-# ---------- RT-Features mit den Live-Daten aktualisieren ----------
-# Die Uhrzeit vom letzten Play und "in den letzten 24h gehört?" kennt man erst jetzt.
-# Wenn ein Song gerade live gehört wurde, nehmen wir die aktuellen Werte von Spotify.
+# RT-Features mit den Live-Daten neu berechnen (kennt man erst jetzt)
+# played_last_24h: für ALLE Songs neu. Ist ein Song nicht in den Live-Daten, wurde er nicht gerade gehört.
+# hour_of_last_play: nur für Songs in den Live-Daten neu, sonst bleibt die letzte bekannte Uhrzeit.
 letzter_live = live.groupby("song_id")["played_at"].max()
+neue["played_last_24h"] = 0
 gerade_gehoert = neue["song_id"].isin(letzter_live.index)
 for i in neue[gerade_gehoert].index:
     letzter = letzter_live[neue.loc[i, "song_id"]]
@@ -80,7 +84,7 @@ for i in neue[gerade_gehoert].index:
     neue.loc[i, "hour_of_last_play"] = letzter.tz_convert(ZEITZONE).hour
 print(f"   davon {gerade_gehoert.sum()} gerade live gehört (RT-Features aktualisiert)")
 
-# ---------- Schritt 3: Modell aus der Model Registry holen ----------
+# Modell aus der Model Registry holen
 print("3) Lade das neueste Modell aus der Model Registry ...")
 mr = project.get_model_registry()
 alle_versionen = mr.get_models("prewrapped_model")
@@ -94,7 +98,7 @@ if not list(download_ordner.rglob("model.pkl")):
 modell = joblib.load(next(download_ordner.rglob("model.pkl")))
 print(f"   Modell Version {neuestes.version}")
 
-# ---------- Schritt 4: Vorhersage ----------
+# Vorhersage
 print("4) Mache die Vorhersage ...\n")
 neue["chance"] = modell.predict_proba(neue[FEATURE_SPALTEN])[:, 1]
 neue = neue.sort_values("chance", ascending=False)

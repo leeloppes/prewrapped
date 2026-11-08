@@ -20,7 +20,7 @@ from src.features import FEATURE_SPALTEN, LABEL_SPALTE
 
 load_dotenv()
 
-# ---------- Verbinden ----------
+# Verbinden
 print("1) Verbinde mit Hopsworks ...")
 project = hopsworks.login(
     host=os.getenv("HOPSWORKS_HOST"),
@@ -30,10 +30,10 @@ project = hopsworks.login(
 )
 fs = project.get_feature_store()
 
-# ---------- Schritt 1: Feature Group laden ----------
+# Feature Group laden
 fg = fs.get_feature_group(name="song_features", version=2)
 
-# ---------- Schritt 2: Feature View erstellen ----------
+# Feature View erstellen
 # Die Query sagt, welche Spalten wir wollen: die Features + das Label.
 # Kein Filter hier, weil die Inferenz Pipeline die gleiche View für die neuen Songs braucht.
 print("2) Erstelle Feature View ...")
@@ -47,7 +47,7 @@ fv = fs.get_or_create_feature_view(
     description="Features aus der ersten Woche + Label (is_favorite)",
 )
 
-# ---------- Schritt 3: Training Dataset erstellen ----------
+# Training Dataset erstellen
 # Hopsworks teilt die Daten auf: 80 % zum Trainieren, 20 % zum Testen
 print("3) Hole Trainingsdaten ...")
 # Fürs Training nur Songs, bei denen der Monat schon vorbei ist (Label sicher)
@@ -60,9 +60,9 @@ y_train = y_train[LABEL_SPALTE]
 y_test = y_test[LABEL_SPALTE]
 print(f"   {len(X_train)} Songs zum Trainieren, {len(X_test)} zum Testen")
 
-# ---------- Schritt 4: Modell trainieren und bewerten ----------
+# Modell trainieren und bewerten
 print("4) Trainiere Modell ...")
-# Nur ca. 5 % sind Lieblingssongs. "balanced" sagt dem Modell, dass die seltenen
+# Nur ca. 6 % sind Lieblingssongs. "balanced" sagt dem Modell, dass die seltenen
 # Lieblingssongs gleich wichtig sind wie die vielen normalen Songs.
 modell = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42, class_weight="balanced")
 modell.fit(X_train[FEATURE_SPALTEN], y_train)
@@ -81,7 +81,7 @@ wichtigkeit = sorted(zip(FEATURE_SPALTEN, modell.feature_importances_), key=lamb
 for name, wert in wichtigkeit:
     print(f"     {name:<22} {wert:.2f}")
 
-# ---------- Schritt 5: Modell speichern ----------
+# Modell speichern
 print("5) Speichere Modell ...")
 modell_ordner = PROJEKT / "models" / "prewrapped_model"
 modell_ordner.mkdir(parents=True, exist_ok=True)

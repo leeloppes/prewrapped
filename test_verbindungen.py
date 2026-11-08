@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-# ---------- 1. Hopsworks ----------
+# 1. Hopsworks
 print("1) Verbinde mit Hopsworks ...")
 import hopsworks
 
@@ -26,7 +26,7 @@ mr = project.get_model_registry()  # die Model Registry
 print(f"   Hopsworks ok! Projekt: {project.name}")
 
 
-# ---------- 2. Spotify ----------
+# 2. Spotify
 print("\n2) Verbinde mit Spotify ...")
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth

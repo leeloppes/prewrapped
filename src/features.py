@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pandas as pd
 
-# ---------- Einstellungen ----------
+# Einstellungen
 MIN_MS_PLAY = 30_000        # unter 30 Sekunden gilt ein Play als geskippt
 TAGE_BEOBACHTEN = 7         # nach so vielen Tagen machen wir die Vorhersage
 TAGE_LABEL = 30             # bis Tag 30 wird gezählt, ob es ein Lieblingssong wurde
@@ -92,14 +92,14 @@ def berechne_song_features(plays, jetzt=None):
             "artist": p["artist"].iloc[0],
             "track": p["track"].iloc[0],
             "first_played_at": erster,
-            # ---- aggregierte Features (über mehrere Tage) ----
+            # aggregierte Features (über mehrere Tage)
             "plays_first_7d": int(frueh["gehoert"].sum()),
             "skip_rate_first_7d": round(1 - frueh["gehoert"].mean(), 3),
             "days_with_play_7d": int(frueh["played_at"].dt.date.nunique()),
-            # ---- RT-Features (Zustand im Moment der Vorhersage) ----
+            # RT-Features (Zustand im Moment der Vorhersage)
             "played_last_24h": int(letzter > vorhersage_zeit - pd.Timedelta(hours=24)),
             "hour_of_last_play": int(letzter.tz_convert(ZEITZONE).hour),
-            # ---- Label ----
+            # Label
             "is_favorite": int(plays_spaeter >= MIN_PLAYS_LIEBLING),
             "label_fertig": bool(label_fertig),  # False = 30 Tage noch nicht vorbei
         })

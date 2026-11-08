@@ -19,13 +19,13 @@ if list((PROJEKT / "data" / "raw").glob("StreamingHistory_music_*.json")):
 else:
     DATEN_ORDNER = PROJEKT / "data" / "sample"
 
-# ---------- Schritt 1: Rohdaten laden ----------
+# Rohdaten laden
 print(f"1) Lade Daten aus {DATEN_ORDNER.name}/ ...")
 plays = lade_verlauf(DATEN_ORDNER)
 print(f"   {len(plays)} Plays, {plays['song_id'].nunique()} verschiedene Songs")
 print(f"   Zeitraum: {plays['played_at'].min():%d.%m.%Y} bis {plays['played_at'].max():%d.%m.%Y}")
 
-# ---------- Schritt 2 + 3: Features und Label berechnen ----------
+# Features und Label berechnen
 print("\n2) Berechne Features ...")
 features = berechne_song_features(plays)
 fertig = features[features["label_fertig"]]
@@ -36,7 +36,7 @@ print(f"   davon {len(fertig)} mit fertigem Label, "
 print("\n   So sieht die Tabelle aus (erste 5 Zeilen):")
 print(features.drop(columns=["artist", "track"]).head().to_string(index=False))
 
-# ---------- Schritt 4 + 5: In Hopsworks speichern ----------
+# In Hopsworks speichern
 import os
 import hopsworks
 from dotenv import load_dotenv
@@ -55,7 +55,7 @@ fs = project.get_feature_store()
 # Hopsworks will die Zeit ohne Zeitzone, darum UTC entfernen
 features["first_played_at"] = features["first_played_at"].dt.tz_localize(None)
 
-# Schritt 4: Feature Group erstellen (oder holen, falls es sie schon gibt)
+# Feature Group erstellen (oder holen, falls es sie schon gibt)
 fg = fs.get_or_create_feature_group(
     name="song_features",
     version=2,  # Version 1 = Beispieldaten, Version 2 = meine echten Daten
@@ -65,7 +65,7 @@ fg = fs.get_or_create_feature_group(
     description="Features pro Song aus der ersten Woche und Label (Lieblingssong ja/nein)",
 )
 
-# Schritt 5: Daten einfügen
+# Daten einfügen
 print("4) Speichere Features in Hopsworks ...")
 fg.insert(features)
 print(f"   fertig, {len(features)} Songs in der Feature Group 'song_features'")
