@@ -103,3 +103,11 @@ print("PreWrapped - meine neuen Songs mit dem meisten Lieblingssong-Potenzial:")
 for _, zeile in neue.head(10).iterrows():
     live_info = "  (gerade gehört)" if zeile["song_id"] in letzter_live.index else ""
     print(f"   {zeile['chance']:>4.0%}  {zeile['song_id']}{live_info}")
+
+# Gerade live gehörte Songs extra zeigen (auch wenn sie nicht in den Top 10 sind)
+neue["platz"] = range(1, len(neue) + 1)
+live_songs = neue[neue["song_id"].isin(letzter_live.index)]
+if len(live_songs) > 0:
+    print("\nNeue Songs, die ich gerade live gehört habe:")
+    for _, zeile in live_songs.iterrows():
+        print(f"   {zeile['chance']:>4.0%}  Platz {zeile['platz']} von {len(neue)}  {zeile['song_id']}")
